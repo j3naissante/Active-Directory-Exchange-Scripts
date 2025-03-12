@@ -1,0 +1,1 @@
+Get-MailboxFolderStatistics user@yourdomain.com | select identity,itemsinfolder
