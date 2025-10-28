@@ -1,23 +1,22 @@
-# Define the organizational unit (OU) to search for users
 $OU = ""
 
-# Define the path to the CSV file containing the list of user logons
-$csvFilePath = "your csv path"
+# Define the path to the TXT file containing the list of user logons
+$txtFilePath = ""
 
-# Import the list of user logons from the CSV file
-$userLogons = Import-Csv -Path $csvFilePath
+# Import the list of user logons from the TXT file
+$userLogons = Get-Content -Path $txtFilePath
 
 # Loop through each user logon in the list
-foreach ($logon in $userLogons.UserLogon) {
+foreach ($logon in $userLogons) {
 
-    # Get the user object from Active Directory based on the UserPrincipalName
-    $user = Get-ADUser -Filter {UserPrincipalName -eq $logon} -SearchBase $OU
-    
+
+    # Query AD user by UPN inside parent OU (searching sub-OUs too)
+    $user = Get-ADUser -Filter "UserPrincipalName -eq '$logon'" -SearchBase $OU -SearchScope Subtree
+
     if ($user) {
-        # Remove the user from Active Directory without confirmation
-        Remove-ADUser -Identity $user -Confirm:$false
-        Write-Host "Deleted user: $logon"
+        Write-Host "Deleting user: $logon ($($user.DistinguishedName))"
+        Remove-ADObject -Identity $user.DistinguishedName -Recursive -Confirm:$false
     } else {
-        Write-Host "User not found: $logon"
+        Write-Host "User not found in $OU or its sub-OUs: $logon"
     }
 }
