@@ -21,7 +21,7 @@ foreach ($user in $users) {
 
         if ($adUser) {
             $securePassword = ConvertTo-SecureString $newPassword -AsPlainText -Force
-            Set-ADAccountPassword -Identity $adUser.DistinguishedName -NewPassword $securePassword
+            Set-ADAccountPassword -Identity $adUser.DistinguishedName -NewPassword $securePassword -Reset
             Set-ADUser -Identity $adUser.DistinguishedName -ChangePasswordAtLogon $true
 
             Write-Host "Password updated for $upn"
