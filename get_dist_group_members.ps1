@@ -7,4 +7,4 @@ $GroupName = "Your Group Name"
 $members = Get-DistributionGroupMember -Identity $GroupName
 
 # Display the name and email address of each member in a grid view
-$members | Select-Object DisplayName, PrimarySmtpAddress | Out-GridView
+$members | Select-Object PrimarySmtpAddress | Out-GridView
